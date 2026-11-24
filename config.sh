@@ -1,19 +1,13 @@
-# claude-slurm settings. Plain KEY="value" lines; $HOME and keys above may be used.
-# The scripts read this file from $CLAUDE_SLURM_HOME (default ~/.claude/claude-slurm).
+# Settings for the claude-rc skill. Read by scripts/claude_rc.sh and by:
+#   ~/.claude/skills/scripts/get_config.py [KEY]
+# Keep the syntax plain: KEY="value", referring only to $HOME or keys above it.
 
-CLAUDE_SLURM_HOME="${CLAUDE_SLURM_HOME:-$HOME/.claude/claude-slurm}"
+## Folders
+LAB_DIR="$HOME"                                  # where your projects live; claude-rc searches it for a session's folder (set it to your projects folder)
+SESSIONS_DIR="$HOME/claude_sessions"             # everything claude-rc keeps, in one folder
+REGISTRY="$SESSIONS_DIR/claude_rc_sessions.md"   # session names, paths and ids (a session is resumed from here)
+JOB_LOGS_DIR="$SESSIONS_DIR/job_logs"            # SLURM logs of the host jobs
 
-REGISTRY="$CLAUDE_SLURM_HOME/sessions.md"     # session names, folders and ids (one row each)
-JOB_LOGS_DIR="$CLAUDE_SLURM_HOME/job_logs"     # SLURM logs of the session jobs
-
-# Resources of a session job. A session needs little: Claude runs on Anthropic's servers.
-JOB_TIME="7-00:00:00"                          # time limit (your cluster may allow less)
-JOB_CPUS=2
-JOB_MEM="8G"
-JOB_PARTITION=""                               # empty = the cluster's default partition
-SBATCH_EXTRA=""                                # anything else, e.g. "--account=mylab --qos=normal"
-
-# true = every session runs with --dangerously-skip-permissions: it never asks before
-# running a command or editing a file. Handy when nobody watches it, but nothing
-# screens what it does. Leave false unless you accept that.
-SKIP_PERMISSIONS=false
+## Cluster
+CPU_JOB_LIMIT=24                                 # when a session starts another one on its own: keep your CPU jobs (running and pending) below this
+HOST_JOB_TIME="7-00:00:00"                       # time limit of a host job; the session ends with it

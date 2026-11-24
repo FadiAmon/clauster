@@ -1,62 +1,56 @@
-# claude-slurm
+# claude-rc
 
-Run [Claude Code](https://docs.claude.com/en/docs/claude-code/overview) sessions as SLURM jobs on a cluster and drive them from the Claude app or claude.ai with [remote control](https://docs.claude.com/en/docs/claude-code/remote-control). Each session runs in tmux on a compute node, has a name, and can be resumed later in the same folder.
+A Claude Code skill that starts (and resumes) a Claude session with Remote Control as a SLURM job on the cluster. The session runs inside tmux on a compute node, so you can open it from the Claude app and it keeps running after you disconnect.
 
-It comes as two Claude Code skills, so you can just ask Claude ("start a session called `data-prep` in `~/proj/data`"), plus the scripts behind them, which also work on their own.
+## What you need first
 
-| Skill | What it does |
+This bundle is the skill and its scripts. It does not include the tools below; they must already work on your account:
+
+| Needed | Why |
 |---|---|
-| `claude-rc` | Submits a new SLURM job that runs one session |
-| `job-rc` | Starts another session inside the job you're already in, without a new job |
+| SLURM on the cluster | The job is submitted with `sbatch`. |
+| `tmux` and `claude` on the compute nodes | The job starts `claude` inside tmux. `claude` must be logged in and on the node's PATH (`~/.local/bin` or `~/.npm-global/bin`). |
+| `python3`, `flock`, `awk` | Reading settings and updating the session registry. |
+| Remote Control available on your Claude account | Needed to open the session from the app. |
+
+It works on SLURM clusters. On another scheduler it will not work as is.
 
 ## Install
 
-On the cluster's login node, with Claude Code and tmux installed and remote control working (`claude --remote-control` once by hand):
-
-```bash
-git clone https://github.com/FadiAmon/claude-slurm ~/.claude/claude-slurm
-~/.claude/claude-slurm/install.sh
+```
+unzip claude-rc-bundle.zip
+cd claude-rc-bundle
+./install.sh
 ```
 
-If you installed the older `claude-rc` bundle, the installer keeps your old skill folder as `claude-rc.bak-<time>`. To keep resuming your old sessions, point `REGISTRY` in `config.sh` at your old registry (`~/claude_sessions/claude_rc_sessions.md`); the format is the same.
+It copies the skill to `~/.claude/skills/` (the path is fixed), creates the session folders, and checks the tools above. It saves any file it replaces as `<name>.bak-<time>`. An existing `config.sh` is left alone and `config.sh.new` is written next to it.
 
-Then set the job's time, CPUs, memory and partition in `~/.claude/claude-slurm/config.sh` to what your cluster allows. A session needs little: the model runs on Anthropic's servers.
+Then edit `~/.claude/skills/config.sh`: set `LAB_DIR` to the folder where your projects live. The other values work as they are.
 
 ## Use
 
-Ask Claude, or run the scripts yourself:
+Ask Claude in plain words, in any Claude Code session:
 
-```bash
-S=~/.claude/claude-slurm/scripts
+- "Start a claude session called `my_rc` in `~/my_project`."
+- "Resume `my_rc`."
+- "Start `my_rc` in `~/my_project` with opus at high effort."
 
-$S/submit.sh -n data-prep -d ~/proj/data      # new session in its own job
-$S/submit.sh -r data-prep                     # resume it later, same folder
-$S/submit.sh -n eval -d ~/proj -m opus -e high  # pick a model and effort
+It submits a CPU job (no GPU), prints the job id and how to attach (`ssh <node>`, then `tmux attach -t claude_<name>_`), and records the session in the registry so a later resume uses the same name and folder. The session appears in the Claude app under its name.
 
-$S/job_rc.sh -n helper -d ~/proj               # from inside a job: one more session, no new job
-```
+## Things to know
 
-The session shows up in the Claude app under its name. To use its terminal instead:
+- **No permission prompts.** Every session starts with `--dangerously-skip-permissions`: it never asks before running a command, and nothing screens its commands. To get prompts, remove that flag near the end of `scripts/claude_rc.sh`.
+- **It holds a CPU slot until its time limit** (`HOST_JOB_TIME`, 7 days by default). Cancel the job to end the session.
+- **Resume needs the registry.** `~/claude_sessions/claude_rc_sessions.md` (set by `REGISTRY`) holds each session's name, folder, last job and id. A session can only be resumed from the same folder and name. Don't delete its row.
+- **Names are unique.** Starting a name that already runs, or that is registered with another folder, is refused.
+- **Keep-alive.** The job must stay up or SLURM kills the session. The script runs a Jupyter notebook server for that where an `anaconda` module exists (its link appears in the job log), and otherwise just sleeps.
 
-```bash
-squeue -j <job> -h -o %N        # the node
-ssh <node>
-tmux attach -t claude_data-prep                    # claude-rc session
-tmux -L job_<job> attach -t claude_helper          # job-rc session
-```
+## Files
 
-The job ends when its sessions exit, at the time limit, or with `scancel <job>`.
-
-## How it works
-
-- `submit.sh` checks the name, then runs `sbatch` with the resources from `config.sh`. Logs go to `job_logs/slurm-<name>-<job>.out`.
-- In the job, `claude_rc.sh` starts `claude --session-id <id> --remote-control <name>` in tmux and records the name, folder, job and session id in `sessions.md`. A resume runs `claude --resume <id>` from the same folder.
-- One name, one session: a name already registered with another folder, or still queued or running, is refused.
-
-## Permissions
-
-By default a session asks before it runs commands or edits files, and you answer in the app. With `SKIP_PERMISSIONS=true` in `config.sh` every session runs with `--dangerously-skip-permissions` and never asks. That suits sessions nobody watches, but nothing then checks what they do, so turn it on only if you accept that.
-
-## License
-
-MIT
+| File | Role |
+|---|---|
+| `claude-rc/SKILL.md` | The skill Claude reads. |
+| `scripts/claude_rc.sh` | The job script: starts claude in tmux, registers the session, keeps the job alive. |
+| `scripts/get_config.py` | Prints settings from `config.sh`. |
+| `config.sh` | Folders and limits (`LAB_DIR`, `SESSIONS_DIR`, `REGISTRY`, `JOB_LOGS_DIR`, `CPU_JOB_LIMIT`, `HOST_JOB_TIME`). |
+| `install.sh` | Copies everything into `~/.claude/skills/` and creates the folders. |
