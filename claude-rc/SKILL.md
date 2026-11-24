@@ -1,11 +1,11 @@
 ---
 name: claude-rc
-description: Starts or resumes a Claude Code remote-control session as a SLURM job on the cluster, in a tmux session on the node, by submitting ~/.claude/skills/scripts/claude_rc.sh with slurmx or sbatch as a CPU job. Keeps a registry of session names and paths so a resume uses the same ones. Use when the user asks to launch, start, open or resume a Claude session on the cluster, or to run claude_rc.
+description: Starts or resumes a Claude Code remote-control session as a SLURM job on the cluster, in a tmux session on the node, by submitting ~/.claude/skills/scripts/claude_rc.sh with slurmx or sbatch, as a CPU job unless the user asks for a GPU. Keeps a registry of session names and paths so a resume uses the same ones. Use when the user asks to launch, start, open or resume a Claude session on the cluster, or to run claude_rc.
 ---
 
 # claude-rc
 
-Submits `~/.claude/skills/scripts/claude_rc.sh` as a CPU job (time limit `HOST_JOB_TIME`; cores and memory are the defaults; never add a GPU, CPUs or memory to it: a session needs none). The script starts `claude` inside a detached tmux session on the node, then keeps the job alive.
+Submits `~/.claude/skills/scripts/claude_rc.sh` as a job with the default cores and memory and time limit `HOST_JOB_TIME`. It's a CPU job unless the user asks for a GPU: Claude itself needs none, so add one only when the user wants the session to run GPU work on its own node. The script starts `claude` inside a detached tmux session on the node, then keeps the job alive.
 
 Settings come from `~/.claude/skills/config.sh` (print one with `. ~/.claude/skills/config.sh; echo "$REGISTRY"`), and a name in capitals below (`REGISTRY`, `HOST_JOB_TIME`, `SUBMITTER`, `QOS`, `PARTITION`, `ACCOUNT`, `JOB_LOGS_DIR`, `LAB_DIR`, `CPU_JOB_LIMIT`) means its value there.
 
@@ -39,6 +39,10 @@ With sbatch:
 | `QOS`, `PARTITION` or `ACCOUNT` set in `config.sh` | add `--qos <QOS>`, `-p <PARTITION>` or `--account <ACCOUNT>` before the script |
 
 Either tool, with model M and effort E: add `-m M -e E` after the script.
+
+With a GPU (only when the user asks), before the script:
+- slurmx: `--vram <GB>` (the GPU memory the user wants), or `--card <card>` for a named card, and `--priority <name>` if they name one.
+- sbatch: `--gres=gpu:1` (or `--gres=gpu:<type>:1` for a named card), plus `-p <partition>` if the cluster keeps GPUs in their own partition.
 
 - Model and effort: only when the user names them. `-m` takes an alias (`fable`, `opus`, `sonnet`, `haiku`) or a full model name; `-e` takes `low`, `medium`, `high`, `xhigh` or `max`. Without them the script uses `DEFAULT_MODEL` and `DEFAULT_EFFORT` from `config.sh`, and where those are empty, the defaults in `~/.claude/settings.json`.
 

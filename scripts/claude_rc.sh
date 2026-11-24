@@ -1,8 +1,9 @@
 #!/bin/bash
 #SLX --vram 0 --time 7-00:00:00
 #SBATCH --time=7-00:00:00
-# A CPU job submitted with slurmx or sbatch (SUBMITTER in config.sh). Each reads only its own
-# header line above. Cores and memory are the defaults of slurmx or the cluster.
+# A job submitted with slurmx or sbatch (SUBMITTER in config.sh). Each reads only its own
+# header line above. A CPU job by default; a GPU option given at submit beats the header.
+# Cores and memory are the defaults of slurmx or the cluster.
 
 # Usage (from the session's directory D; the job is named after the session; T and J are HOST_JOB_TIME
 # and JOB_LOGS_DIR in ~/.claude/skills/config.sh, and the header's --time is the fallback):
