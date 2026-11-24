@@ -5,14 +5,11 @@ A Claude Code skill that starts (and resumes) a Claude session with Remote Contr
 ## Install
 
 ```
-git clone https://github.com/FadiAmon/clauster
-cd clauster
-./install.sh
+CLAUSTER_DIR=~/clauster
+git clone https://github.com/FadiAmon/clauster "$CLAUSTER_DIR"
+cd "$CLAUSTER_DIR"
+claude "Install the claude-rc skill from this repo by running ./install.sh, then tell me what it reported."
 ```
-
-It copies the skill to `~/.claude/skills/` (the path is fixed), creates the session folders, and checks the tools it needs (`slurmx` or `sbatch`, `tmux`, `claude`, `flock`, `awk`). It saves any file it replaces as `<name>.bak-<time>`. An existing `config.sh` is left alone and `config.sh.new` is written next to it.
-
-Then edit `~/.claude/skills/config.sh`: set `LAB_DIR` to the folder where your projects live, and `QOS`, `PARTITION` or `ACCOUNT` if your cluster needs them (sbatch only). Jobs go through slurmx if it's installed, else sbatch; `SUBMITTER` forces one. The other values work as they are.
 
 ## Use
 
