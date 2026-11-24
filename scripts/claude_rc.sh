@@ -1,11 +1,14 @@
 #!/bin/bash
+#SLX --vram 0 --time 7-00:00:00
 #SBATCH --time=7-00:00:00
-# A CPU job submitted with sbatch. Cores and memory are the cluster's defaults.
+# A CPU job submitted with slurmx or sbatch (SUBMITTER in config.sh). Each reads only its own
+# header line above. Cores and memory are the defaults of slurmx or the cluster.
 
-# Usage (from the session's directory D; -J names the job after the session; T and J are HOST_JOB_TIME
+# Usage (from the session's directory D; the job is named after the session; T and J are HOST_JOB_TIME
 # and JOB_LOGS_DIR in ~/.claude/skills/config.sh, and the header's --time is the fallback):
-#   sbatch --time T -J NAME -D D -o J/slurm-%x-%j.out ~/.claude/skills/scripts/claude_rc.sh -n NAME -d D   # new
-#   sbatch --time T -J NAME -D D -o J/slurm-%x-%j.out ~/.claude/skills/scripts/claude_rc.sh -r NAME        # resume
+#   slurmx submit --no-wait --time T -j NAME -w D -o J ~/.claude/skills/scripts/claude_rc.sh -n NAME -d D   # new, slurmx
+#   sbatch --time T -J NAME -D D -o J/slurm-%x-%j.out ~/.claude/skills/scripts/claude_rc.sh -n NAME -d D    # new, sbatch
+#   (resume: -r NAME instead of -n NAME -d D)
 #
 # -n  remote-control display name for a NEW session (default: "Slurm Claude")
 # -r  name or ID of an existing Claude session to resume (runs plain `claude --resume`)
@@ -15,7 +18,7 @@
 
 NAME=""
 RESUME=""
-WORKDIR="$PWD"   # sbatch -D D starts the job in D
+WORKDIR="$PWD"   # slurmx -w D or sbatch -D D starts the job in D
 MODEL=""
 EFFORT=""
 
@@ -26,7 +29,7 @@ while getopts "n:r:d:m:e:" opt; do
     d) WORKDIR="$OPTARG" ;;
     m) MODEL="$OPTARG" ;;
     e) EFFORT="$OPTARG" ;;
-    *) echo "Usage: sbatch [options] $0 [-n name] [-r resume_name] [-d dir] [-m model] [-e effort]"; exit 1 ;;
+    *) echo "Usage: slurmx submit [options] $0 (or sbatch [options] $0) [-n name] [-r resume_name] [-d dir] [-m model] [-e effort]"; exit 1 ;;
   esac
 done
 

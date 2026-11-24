@@ -10,7 +10,11 @@ STAMP="$(date +%Y%m%d-%H%M%S)"
 echo "== Checking what the sessions need"
 need() { command -v "$1" >/dev/null 2>&1 && echo "  ok       $1" || { echo "  MISSING  $1  ($2)"; MISSING=1; }; }
 MISSING=0
-need sbatch  "SLURM; claude-rc submits the session's job with it"
+if command -v slurmx >/dev/null 2>&1; then
+  echo "  ok       slurmx   (SUBMITTER=auto will submit with it)"
+else
+  need sbatch  "SLURM; claude-rc submits the session's job with it (slurmx not found)"
+fi
 need tmux    "each session runs inside tmux on the compute node"
 need claude  "Claude Code; it must also be on the compute nodes' PATH (~/.local/bin or ~/.npm-global/bin) and logged in"
 need flock   "the session registry is updated under a lock"
