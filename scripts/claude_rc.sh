@@ -97,8 +97,9 @@ else
 fi
 [ -n "$MODEL" ] && CMD="$CMD --model $(printf %q "$MODEL")"
 [ -n "$EFFORT" ] && CMD="$CMD --effort $EFFORT"
-# the user chose no permission prompts for these sessions
-CMD="$CMD --dangerously-skip-permissions"
+# SKIP_PERMISSIONS in config.sh: true = no permission prompts (the default)
+SKIP_PERMISSIONS="$(. "$HOME/.claude/skills/config.sh"; echo "${SKIP_PERMISSIONS:-true}")"
+[ "$SKIP_PERMISSIONS" = true ] && CMD="$CMD --dangerously-skip-permissions"
 echo "Running: $CMD"
 
 # some nodes fail to create tmux's socket dir on their own

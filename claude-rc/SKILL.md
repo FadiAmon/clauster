@@ -54,8 +54,8 @@ Attach: `ssh <node>` then `tmux attach -t <session>`. The session name is `claud
 ## Known behavior
 
 - The job carries the session name from the start (`-J`).
-- Every session runs with `--dangerously-skip-permissions` (set in `claude_rc.sh`; remove that flag there if you want permission prompts): it never asks for permission, and nothing screens its commands.
-- A new session runs `claude --session-id <new id> --remote-control "X"` inside tmux, and the script stores the id in the registry. A resume runs `claude --resume <registered id> --remote-control "X"`, because remote-control names aren't saved as conversation titles; a name without a registered id can't be resumed. Both add any `-m`/`-e` flags and `--dangerously-skip-permissions`.
+- With `SKIP_PERMISSIONS=true` in `config.sh` (the default), every session runs with `--dangerously-skip-permissions`: it never asks for permission, and nothing screens its commands. With `false` it asks, and the user answers in the app. Change it only when the user asks.
+- A new session runs `claude --session-id <new id> --remote-control "X"` inside tmux, and the script stores the id in the registry. A resume runs `claude --resume <registered id> --remote-control "X"`, because remote-control names aren't saved as conversation titles; a name without a registered id can't be resumed. Both add any `-m`/`-e` flags, and `--dangerously-skip-permissions` when `SKIP_PERMISSIONS=true`.
 - A name starting with `MON.` or `WRK.` shows in the app with 🟣 or 🟢 before it. Pass the plain name. A resumed session reconnects to its own entry in the app (tested with `job-rc`).
 - At its end the script keeps the job alive until the time limit, because SLURM kills the tmux session when the job ends. On a cluster with an anaconda module and jupyter it starts a notebook server for this (its link is in the log, and a `cuda_env` "EnvironmentNameNotFound" line there is harmless); anywhere else it just sleeps. Don't remove this wait.
 - To stop a session: cancel its job with `scancel <id>`, only when the user asks.

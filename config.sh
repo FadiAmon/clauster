@@ -11,3 +11,6 @@ JOB_LOGS_DIR="$SESSIONS_DIR/job_logs"            # SLURM logs of the host jobs
 ## Cluster
 CPU_JOB_LIMIT=24                                 # when a session starts another one on its own: keep your CPU jobs (running and pending) below this
 HOST_JOB_TIME="7-00:00:00"                       # time limit of a host job; the session ends with it
+
+## Permissions
+SKIP_PERMISSIONS=true                            # true: sessions run with --dangerously-skip-permissions and never ask before running a command; false: they ask, and you answer in the app

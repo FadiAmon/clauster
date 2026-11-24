@@ -39,7 +39,7 @@ It submits a CPU job (no GPU), prints the job id and how to attach (`ssh <node>`
 
 ## Things to know
 
-- **No permission prompts.** Every session starts with `--dangerously-skip-permissions`: it never asks before running a command, and nothing screens its commands. To get prompts, remove that flag near the end of `scripts/claude_rc.sh`.
+- **No permission prompts by default.** With `SKIP_PERMISSIONS=true` in `config.sh` (the default), every session starts with `--dangerously-skip-permissions`: it never asks before running a command, and nothing screens its commands. Set it to `false` to get prompts, which you answer in the app.
 - **It holds a CPU slot until its time limit** (`HOST_JOB_TIME`, 7 days by default). Cancel the job to end the session.
 - **Resume needs the registry.** `~/claude_sessions/claude_rc_sessions.md` (set by `REGISTRY`) holds each session's name, folder, last job and id. A session can only be resumed from the same folder and name. Don't delete its row.
 - **Names are unique.** Starting a name that already runs, or that is registered with another folder, is refused.
