@@ -18,6 +18,8 @@ git clone https://github.com/FadiAmon/claude-slurm ~/.claude/claude-slurm
 ~/.claude/claude-slurm/install.sh
 ```
 
+If you installed the older `claude-rc` bundle, the installer keeps your old skill folder as `claude-rc.bak-<time>`. To keep resuming your old sessions, point `REGISTRY` in `config.sh` at your old registry (`~/claude_sessions/claude_rc_sessions.md`); the format is the same.
+
 Then set the job's time, CPUs, memory and partition in `~/.claude/claude-slurm/config.sh` to what your cluster allows. A session needs little: the model runs on Anthropic's servers.
 
 ## Use

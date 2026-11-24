@@ -22,7 +22,11 @@ Runs `~/.claude/claude-slurm/scripts/submit.sh`, which submits a SLURM job (`cla
 | either, with model M and effort E | add `-m M -e E` |
 
 - Model and effort only when the user names them. `-m` takes an alias (`opus`, `sonnet`, `haiku`) or a full model name; `-e` takes `low`, `medium`, `high`, `xhigh` or `max`. Without them the session uses `~/.claude/settings.json`.
-- New session: D is the folder the session will work in. Expand `~` yourself. If the user gave no folder, use the registered path when the name is registered, else ask which folder. Don't invent a name.
+- New session: D is the folder the session will work in. Expand `~` yourself. Don't invent a name. If the user gave no folder:
+  1. A registered name: use its registered path.
+  2. Earlier conversations: `cd ~/.claude/projects; grep -l "<name>" ./*/*.jsonl`, then the folder from `grep -m1 -o '"cwd":"[^"]*"' <file>`. Ignore hits whose folder is just your home or projects root: those only mention the name.
+  3. Folder names: `find ~ -maxdepth 4 -type d -iname "*<name>*" -not -path "*/.*"`.
+  Use the first one that gives one clear folder, check it exists, and tell the user which folder you picked and why. If they disagree or find nothing, ask the user.
 - Resume: the script uses the registered folder; don't pass `-d`. If the user's text matches exactly one registered name, use it and say so; if several, list them and ask.
 
 ## Steps
