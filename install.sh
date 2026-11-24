@@ -64,6 +64,36 @@ EOF
 fi
 echo "  sessions: $SESSIONS_DIR   job logs: $JOB_LOGS_DIR"
 
+# With SKIP_PERMISSIONS=true, claude shows a one-time "bypass permissions" warning that waits
+# for a keypress inside tmux. This setting skips it, so a new session starts on its own.
+SKIP="$(. "$DEST/config.sh"; echo "${SKIP_PERMISSIONS:-true}")"
+if [ "$SKIP" = true ]; then
+  echo "== Skipping the one-time bypass-permissions warning"
+  SETTINGS="$HOME/.claude/settings.json"
+  if command -v python3 >/dev/null 2>&1; then
+    python3 - "$SETTINGS" "$STAMP" <<'EOF'
+import json, os, shutil, sys
+p = sys.argv[1]
+d = {}
+if os.path.exists(p) and os.path.getsize(p) > 0:
+    with open(p) as f:
+        d = json.load(f)
+if d.get("skipDangerousModePermissionPrompt") is True:
+    print("  already set in " + p)
+else:
+    if os.path.exists(p):
+        shutil.copy2(p, p + ".bak-" + sys.argv[2])
+    d["skipDangerousModePermissionPrompt"] = True
+    with open(p, "w") as f:
+        json.dump(d, f, indent=2)
+        f.write("\n")
+    print("  set skipDangerousModePermissionPrompt: true in " + p)
+EOF
+  else
+    echo "  python3 not found: add  \"skipDangerousModePermissionPrompt\": true  to $SETTINGS yourself"
+  fi
+fi
+
 echo "== Done"
 echo "In Claude Code, ask for it in plain words, e.g.:"
 echo "  start a claude session called my_rc in ~/my_project"
