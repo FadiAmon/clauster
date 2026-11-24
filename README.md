@@ -5,8 +5,8 @@ A Claude Code skill that starts (and resumes) a Claude session with Remote Contr
 ## Install
 
 ```
-git clone https://github.com/FadiAmon/claude-slurm
-cd claude-slurm
+git clone https://github.com/FadiAmon/clauster
+cd clauster
 ./install.sh
 ```
 
