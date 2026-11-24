@@ -18,9 +18,10 @@ Ask Claude in plain words, in any Claude Code session:
 - "Start a claude session called `my_rc` in `~/my_project`."
 - "Resume `my_rc`."
 - "Start `my_rc` in `~/my_project` with opus at high effort."
-- "Start `my_rc` in `~/my_project` on a GPU."
 
-It submits a CPU job, or a GPU job if you ask for one, prints the job id and how to attach (`ssh <node>`, then `tmux attach -t claude_<name>_`), and records the session in the registry so a later resume uses the same name and folder. The session appears in the Claude app under its name.
+You could also ask it to start a GPU job:
+
+- "Start a GPU job named `gpu_rc` with rtx 4090."
 
 ## Files
 
