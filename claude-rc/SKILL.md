@@ -7,7 +7,7 @@ description: Starts or resumes a Claude Code remote-control session as a SLURM j
 
 Submits `~/.claude/skills/scripts/claude_rc.sh` with `sbatch`, as a CPU job (time limit `HOST_JOB_TIME`; cores and memory are the cluster's defaults; never add a GPU to it: a session needs none). The script starts `claude` inside a detached tmux session on the node, then keeps the job alive.
 
-Settings come from `~/.claude/skills/config.sh` (print one with `. ~/.claude/skills/config.sh; echo "$REGISTRY"`), and a name in capitals below (`REGISTRY`, `HOST_JOB_TIME`, `JOB_LOGS_DIR`, `LAB_DIR`, `CPU_JOB_LIMIT`) means its value there.
+Settings come from `~/.claude/skills/config.sh` (print one with `. ~/.claude/skills/config.sh; echo "$REGISTRY"`), and a name in capitals below (`REGISTRY`, `HOST_JOB_TIME`, `QOS`, `PARTITION`, `ACCOUNT`, `JOB_LOGS_DIR`, `LAB_DIR`, `CPU_JOB_LIMIT`) means its value there.
 
 ## Session registry
 
@@ -26,6 +26,7 @@ A session can only be resumed from the same path and with the same name it was s
 | new session called X in directory D | `cd D && sbatch --time <HOST_JOB_TIME> -J "X" -D D -o <JOB_LOGS_DIR>/slurm-%x-%j.out ~/.claude/skills/scripts/claude_rc.sh -n "X" -d D` |
 | resume session X | `cd P && sbatch --time <HOST_JOB_TIME> -J "X" -D P -o <JOB_LOGS_DIR>/slurm-%x-%j.out ~/.claude/skills/scripts/claude_rc.sh -r "X"`, where P is X's registered path |
 | either, with model M and effort E | add `-m M -e E` |
+| `QOS`, `PARTITION` or `ACCOUNT` set in `config.sh` | add `--qos <QOS>`, `-p <PARTITION>` or `--account <ACCOUNT>` before the script |
 
 - Model and effort: only when the user names them. `-m` takes an alias (`fable`, `opus`, `sonnet`, `haiku`) or a full model name; `-e` takes `low`, `medium`, `high`, `xhigh` or `max`. Without them the session gets the defaults in `~/.claude/settings.json` (Sonnet 5.5 at xhigh).
 
@@ -33,6 +34,7 @@ A session can only be resumed from the same path and with the same name it was s
 - New session: D is the session's working repo, and you submit from D itself. Expand `~` in D yourself. No directory given: find the working repo from the name first (step 2). Use the current directory only if no repo is found. Always pass `-d`. No name given: omit `-n` (the script uses "Slurm Claude"); don't invent a name.
 - Resume: submit from the registered path itself, with `-D` set to it and `-r` only. Don't pass `-d`: the script then uses the folder the job starts in, which is the session's path.
 - Don't combine `-r` and `-n`.
+- A QoS, partition or account the user names for this session wins over `config.sh`.
 
 ## Steps
 

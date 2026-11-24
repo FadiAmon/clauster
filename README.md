@@ -12,7 +12,7 @@ cd claude-slurm
 
 It copies the skill to `~/.claude/skills/` (the path is fixed), creates the session folders, and checks the tools it needs (`sbatch`, `tmux`, `claude`, `flock`, `awk`). It saves any file it replaces as `<name>.bak-<time>`. An existing `config.sh` is left alone and `config.sh.new` is written next to it.
 
-Then edit `~/.claude/skills/config.sh`: set `LAB_DIR` to the folder where your projects live. The other values work as they are.
+Then edit `~/.claude/skills/config.sh`: set `LAB_DIR` to the folder where your projects live, and `QOS`, `PARTITION` or `ACCOUNT` if your cluster needs them. The other values work as they are.
 
 ## Use
 
@@ -30,5 +30,5 @@ It submits a CPU job (no GPU), prints the job id and how to attach (`ssh <node>`
 |---|---|
 | `claude-rc/SKILL.md` | The skill Claude reads. |
 | `scripts/claude_rc.sh` | The job script: starts claude in tmux, registers the session, keeps the job alive. |
-| `config.sh` | Folders and limits (`LAB_DIR`, `SESSIONS_DIR`, `REGISTRY`, `JOB_LOGS_DIR`, `CPU_JOB_LIMIT`, `HOST_JOB_TIME`, `SKIP_PERMISSIONS`). |
+| `config.sh` | Folders and limits (`LAB_DIR`, `SESSIONS_DIR`, `REGISTRY`, `JOB_LOGS_DIR`, `CPU_JOB_LIMIT`, `HOST_JOB_TIME`, `QOS`, `PARTITION`, `ACCOUNT`, `SKIP_PERMISSIONS`). |
 | `install.sh` | Copies everything into `~/.claude/skills/` and creates the folders. |
