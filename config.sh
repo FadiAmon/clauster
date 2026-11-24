@@ -17,5 +17,9 @@ QOS=""                                           # QoS for the job; empty = the 
 PARTITION=""                                     # partition for the job; empty = the cluster's default
 ACCOUNT=""                                       # account for the job; empty = your default account
 
+## Session defaults (used when the request names no model or effort)
+DEFAULT_MODEL=""                                 # e.g. opus, sonnet, haiku or a full model name; empty = the default in ~/.claude/settings.json
+DEFAULT_EFFORT=""                                # low, medium, high, xhigh or max; empty = the default in ~/.claude/settings.json
+
 ## Permissions
 SKIP_PERMISSIONS=true                            # true: sessions run with --dangerously-skip-permissions and never ask before running a command; false: they ask, and you answer in the app

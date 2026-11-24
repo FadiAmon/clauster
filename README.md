@@ -27,5 +27,5 @@ It submits a CPU job (no GPU), prints the job id and how to attach (`ssh <node>`
 |---|---|
 | `claude-rc/SKILL.md` | The skill Claude reads. |
 | `scripts/claude_rc.sh` | The job script: starts claude in tmux, registers the session, keeps the job alive. |
-| `config.sh` | Folders and limits (`LAB_DIR`, `SESSIONS_DIR`, `REGISTRY`, `JOB_LOGS_DIR`, `CPU_JOB_LIMIT`, `HOST_JOB_TIME`, `SUBMITTER`, `QOS`, `PARTITION`, `ACCOUNT`, `SKIP_PERMISSIONS`). |
+| `config.sh` | Folders and limits (`LAB_DIR`, `SESSIONS_DIR`, `REGISTRY`, `JOB_LOGS_DIR`, `CPU_JOB_LIMIT`, `HOST_JOB_TIME`, `SUBMITTER`, `DEFAULT_MODEL`, `DEFAULT_EFFORT`, `QOS`, `PARTITION`, `ACCOUNT`, `SKIP_PERMISSIONS`). |
 | `install.sh` | Copies everything into `~/.claude/skills/` and creates the folders. |

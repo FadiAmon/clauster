@@ -33,6 +33,10 @@ while getopts "n:r:d:m:e:" opt; do
   esac
 done
 
+# defaults from config.sh when -m / -e aren't given (empty there = ~/.claude/settings.json)
+[ -z "$MODEL" ] && MODEL="$(. "$HOME/.claude/skills/config.sh"; echo "$DEFAULT_MODEL")"
+[ -z "$EFFORT" ] && EFFORT="$(. "$HOME/.claude/skills/config.sh"; echo "$DEFAULT_EFFORT")"
+
 case "$EFFORT" in
   ""|low|medium|high|xhigh|max) ;;
   *) echo "ERROR: effort must be low, medium, high, xhigh or max"; exit 1 ;;

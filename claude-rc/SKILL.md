@@ -40,7 +40,7 @@ With sbatch:
 
 Either tool, with model M and effort E: add `-m M -e E` after the script.
 
-- Model and effort: only when the user names them. `-m` takes an alias (`fable`, `opus`, `sonnet`, `haiku`) or a full model name; `-e` takes `low`, `medium`, `high`, `xhigh` or `max`. Without them the session gets the defaults in `~/.claude/settings.json`.
+- Model and effort: only when the user names them. `-m` takes an alias (`fable`, `opus`, `sonnet`, `haiku`) or a full model name; `-e` takes `low`, `medium`, `high`, `xhigh` or `max`. Without them the script uses `DEFAULT_MODEL` and `DEFAULT_EFFORT` from `config.sh`, and where those are empty, the defaults in `~/.claude/settings.json`.
 
 - The job name option (`-j` / `-J`) names the job after the session, the folder option (`-w` / `-D`) starts it in the session's folder and `-o` puts its log in `JOB_LOGS_DIR`. Options for the submitter go before the script; the script's own options go after it.
 - New session: D is the session's working repo, and you submit from D itself. Expand `~` in D yourself. No directory given: find the working repo from the name first (step 2). Use the current directory only if no repo is found. Always pass `-d`. No name given: omit `-n` (the script uses "Slurm Claude"); don't invent a name.
