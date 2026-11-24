@@ -8,7 +8,7 @@ A Claude Code skill that starts (and resumes) a Claude session with Remote Contr
 CLAUSTER_DIR=~/clauster
 git clone https://github.com/FadiAmon/clauster "$CLAUSTER_DIR"
 cd "$CLAUSTER_DIR"
-claude "Install the claude-rc skill from this repo by running ./install.sh, then tell me what it reported."
+claude "Install this skill"
 ```
 
 ## Use
