@@ -10,7 +10,7 @@ This bundle is the skill and its scripts. It does not include the tools below; t
 |---|---|
 | SLURM on the cluster | The job is submitted with `sbatch`. |
 | `tmux` and `claude` on the compute nodes | The job starts `claude` inside tmux. `claude` must be logged in and on the node's PATH (`~/.local/bin` or `~/.npm-global/bin`). |
-| `python3`, `flock`, `awk` | Reading settings and updating the session registry. |
+| `flock`, `awk` | Updating the session registry. |
 | Remote Control available on your Claude account | Needed to open the session from the app. |
 
 It works on SLURM clusters. On another scheduler it will not work as is.
@@ -51,6 +51,5 @@ It submits a CPU job (no GPU), prints the job id and how to attach (`ssh <node>`
 |---|---|
 | `claude-rc/SKILL.md` | The skill Claude reads. |
 | `scripts/claude_rc.sh` | The job script: starts claude in tmux, registers the session, keeps the job alive. |
-| `scripts/get_config.py` | Prints settings from `config.sh`. |
 | `config.sh` | Folders and limits (`LAB_DIR`, `SESSIONS_DIR`, `REGISTRY`, `JOB_LOGS_DIR`, `CPU_JOB_LIMIT`, `HOST_JOB_TIME`). |
 | `install.sh` | Copies everything into `~/.claude/skills/` and creates the folders. |

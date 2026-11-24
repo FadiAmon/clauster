@@ -7,7 +7,7 @@ description: Starts or resumes a Claude Code remote-control session as a SLURM j
 
 Submits `~/.claude/skills/scripts/claude_rc.sh` with `sbatch`, as a CPU job (time limit `HOST_JOB_TIME`; cores and memory are the cluster's defaults; never add a GPU to it: a session needs none). The script starts `claude` inside a detached tmux session on the node, then keeps the job alive.
 
-Settings come from `~/.claude/skills/config.sh`: `~/.claude/skills/scripts/get_config.py` prints them, and a name in capitals below (`REGISTRY`, `HOST_JOB_TIME`, `JOB_LOGS_DIR`, `LAB_DIR`, `CPU_JOB_LIMIT`) means its value there.
+Settings come from `~/.claude/skills/config.sh` (print one with `. ~/.claude/skills/config.sh; echo "$REGISTRY"`), and a name in capitals below (`REGISTRY`, `HOST_JOB_TIME`, `JOB_LOGS_DIR`, `LAB_DIR`, `CPU_JOB_LIMIT`) means its value there.
 
 ## Session registry
 

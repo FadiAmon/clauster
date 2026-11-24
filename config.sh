@@ -1,5 +1,4 @@
-# Settings for the claude-rc skill. Read by scripts/claude_rc.sh and by:
-#   ~/.claude/skills/scripts/get_config.py [KEY]
+# Settings for the claude-rc skill. Read by scripts/claude_rc.sh and by the skill.
 # Keep the syntax plain: KEY="value", referring only to $HOME or keys above it.
 
 ## Folders
